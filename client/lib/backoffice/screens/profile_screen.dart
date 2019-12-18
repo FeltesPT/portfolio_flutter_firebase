@@ -95,7 +95,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
-              Text("Profile"),
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(

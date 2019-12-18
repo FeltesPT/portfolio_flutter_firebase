@@ -6,7 +6,6 @@ import 'package:Feltes/backoffice/login.dart';
 import 'package:Feltes/backoffice/network/boAPI.dart';
 import 'package:Feltes/backoffice/screens/add_user_screen.dart';
 import 'package:Feltes/backoffice/screens/profile_screen.dart';
-import 'package:Feltes/backoffice/models/User.dart';
 
 class Backoffice extends StatefulWidget {
   Backoffice({Key key}) : super(key: key);
@@ -19,9 +18,8 @@ class _BackofficeState extends State<Backoffice> {
   final _auth = FirebaseAuth.instance;
   BOAPIHelper api;
   FirebaseUser user;
-
-  List<User> users;
   int _currentIndex = 0;
+  String title = "";
 
   @override
   void initState() {
@@ -30,7 +28,6 @@ class _BackofficeState extends State<Backoffice> {
     checkUser();
 
     api = BOAPIHelper();
-    getData();
   }
 
   void checkUser() async {
@@ -48,23 +45,31 @@ class _BackofficeState extends State<Backoffice> {
     }
   }
 
-  void getData() async {
-    List<User> u = await api.getUsers();
-    setState(() {
-      users = u;
-    });
-  }
-
   void _onItemTapped(int index) {
     setState(() {
       _currentIndex = index;
+      switch (_currentIndex) {
+        case 0:
+          title = "Backoffice";
+          break;
+        case 2:
+          title = "Users";
+          break;
+        case 3:
+          title = "User Details";
+          break;
+          break;
+        default:
+          title = "Backoffice";
+          break;
+      }
     });
   }
 
   Widget getWidget() {
     switch (_currentIndex) {
       case 0:
-        return users == null ? emptyView() : viewWithUsers();
+        return emptyView();
       case 2:
         return AddUserScreen(
           user: user,
@@ -77,12 +82,6 @@ class _BackofficeState extends State<Backoffice> {
       default:
         return Text("Backoffice");
     }
-  }
-
-  Container viewWithUsers() {
-    return Container(
-      child: Text(users.last.email),
-    );
   }
 
   Center emptyView() {
@@ -122,7 +121,7 @@ class _BackofficeState extends State<Backoffice> {
         ],
       ),
       appBar: AppBar(
-        title: Text("Backoffice"),
+        title: Text(title),
         backgroundColor: Color(0xFF2C3E50),
       ),
       body: getWidget(),

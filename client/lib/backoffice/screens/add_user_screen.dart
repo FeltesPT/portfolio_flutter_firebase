@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 // Firebase
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+// Models
+import 'package:Feltes/backoffice/models/User.dart';
 
 class AddUserScreen extends StatefulWidget {
   const AddUserScreen({@required this.user});
@@ -15,6 +17,7 @@ class AddUserScreen extends StatefulWidget {
 class _AddUserScreenState extends State<AddUserScreen> {
   final _auth = FirebaseAuth.instance;
   BOAPIHelper api;
+  List<User> users;
   bool isLoading;
 
   final successSnackBar = SnackBar(
@@ -39,14 +42,18 @@ class _AddUserScreenState extends State<AddUserScreen> {
     isLoading = false;
     api = BOAPIHelper();
 
+    getUsers();
+
     nameController = TextEditingController();
     emailController = TextEditingController();
     passwordController = TextEditingController();
   }
 
-  void logout() {
-    _auth.signOut();
-    Navigator.pop(context);
+  void getUsers() async {
+    List<User> u = await api.getUsers();
+    setState(() {
+      users = u;
+    });
   }
 
   void save() async {
@@ -74,6 +81,18 @@ class _AddUserScreenState extends State<AddUserScreen> {
     });
   }
 
+  Column viewWithUsers() {
+    return Column(
+      children: users.map((user) => Text(user.email)).toList(),
+    );
+  }
+
+  Center emptyView() {
+    return Center(
+      child: Text("Nothing to show"),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return ModalProgressHUD(
@@ -83,7 +102,7 @@ class _AddUserScreenState extends State<AddUserScreen> {
           padding: const EdgeInsets.all(8.0),
           child: Column(
             children: <Widget>[
-              Text("Profile"),
+              users == null ? emptyView() : viewWithUsers(),
               TextField(
                 controller: nameController,
                 decoration: InputDecoration(
@@ -129,12 +148,6 @@ class _AddUserScreenState extends State<AddUserScreen> {
                   save();
                 },
               ),
-              MaterialButton(
-                child: Text("Logout"),
-                color: Colors.red,
-                textColor: Colors.white,
-                onPressed: logout,
-              )
             ],
           ),
         ),
