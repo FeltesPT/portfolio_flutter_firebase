@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'package:http/http.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 
+import 'package:Feltes/backoffice/models/User.dart';
+
 class BOAPIHelper {
   final _auth = FirebaseAuth.instance;
 
@@ -14,7 +16,7 @@ class BOAPIHelper {
     return tokenResult.token;
   }
 
-  Future getUsers() async {
+  Future<List<User>> getUsers() async {
     String url = baseURL + 'users';
 
     String token = 'Bearer ${await _getToken()}';
@@ -22,15 +24,25 @@ class BOAPIHelper {
     Response response = await get(url, headers: {'Authorization': token});
 
     if (response.statusCode == 200) {
-      String data = response.body;
+      Map<String, dynamic> usersJSON = jsonDecode(response.body);
 
-      return jsonDecode(data);
+      List<User> users = [];
+
+      for (var j in usersJSON['users']) {
+        User u =
+            User(email: j['email'], username: j['username'], role: j['role']);
+        users.add(u);
+      }
+
+      return users;
     } else {
       print("Failed to get users - Error Code: ${response.statusCode}");
     }
+
+    return null;
   }
 
-  Future getUser(String id) async {
+  Future<User> getUser(String id) async {
     String url = baseURL + 'users/$id';
 
     String token = 'Bearer ${await _getToken()}';
@@ -38,12 +50,20 @@ class BOAPIHelper {
     Response response = await get(url, headers: {'Authorization': token});
 
     if (response.statusCode == 200) {
-      String data = response.body;
+      Map<String, dynamic> userJSON = jsonDecode(response.body);
 
-      return jsonDecode(data);
+      User user = User(
+        email: userJSON['user']['email'],
+        username: userJSON['user']['displayName'],
+        role: userJSON['user']['customClaims']['role'],
+      );
+
+      return user;
     } else {
       print("Failed to get user - Error Code: ${response.statusCode}");
     }
+
+    return null;
   }
 
   Future addUser({
@@ -71,27 +91,27 @@ class BOAPIHelper {
       String data = response.body;
 
       return jsonDecode(data);
-    } else {
-      print("Failed to update user - Error Code: ${response.statusCode}");
     }
+
+    print("Failed to update user - Error Code: ${response.statusCode}");
     return;
   }
 
-  Future updateUser(
-      {String uid,
-      String text,
-      String id,
-      String displayName,
-      String password,
-      String email,
-      String role}) async {
-    String url = baseURL + 'users/$id';
-
+  Future<bool> updateUser({
+    String uid,
+    String text,
+    String displayName,
+    String password,
+    String email,
+    String role,
+  }) async {
+    String url = baseURL + 'users/$uid';
     String token = 'Bearer ${await _getToken()}';
 
     Response response = await patch(url, headers: {
       'Authorization': token
     }, body: {
+      'id': uid,
       'displayName': displayName,
       'password': password,
       'email': email,
@@ -99,12 +119,10 @@ class BOAPIHelper {
     });
 
     if (response.statusCode == 204) {
-      String data = response.body;
-
-      return jsonDecode(data);
-    } else {
-      print("Failed to update user - Error Code: ${response.statusCode}");
+      return true;
     }
-    return;
+
+    print("Failed to update user - Error Code: ${response.statusCode}");
+    return false;
   }
 }

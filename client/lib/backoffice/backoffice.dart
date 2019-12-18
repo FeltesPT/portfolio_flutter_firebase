@@ -1,10 +1,12 @@
+import 'package:flutter/material.dart';
+import 'package:firebase_auth/firebase_auth.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+
 import 'package:Feltes/backoffice/login.dart';
 import 'package:Feltes/backoffice/network/boAPI.dart';
 import 'package:Feltes/backoffice/screens/add_user_screen.dart';
 import 'package:Feltes/backoffice/screens/profile_screen.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
-import 'package:font_awesome_flutter/font_awesome_flutter.dart';
+import 'package:Feltes/backoffice/models/User.dart';
 
 class Backoffice extends StatefulWidget {
   Backoffice({Key key}) : super(key: key);
@@ -18,7 +20,7 @@ class _BackofficeState extends State<Backoffice> {
   BOAPIHelper api;
   FirebaseUser user;
 
-  var users;
+  List<User> users;
   int _currentIndex = 0;
 
   @override
@@ -47,10 +49,9 @@ class _BackofficeState extends State<Backoffice> {
   }
 
   void getData() async {
-    var data = await api.getUsers();
-
+    List<User> u = await api.getUsers();
     setState(() {
-      users = data['users'];
+      users = u;
     });
   }
 
@@ -80,7 +81,7 @@ class _BackofficeState extends State<Backoffice> {
 
   Container viewWithUsers() {
     return Container(
-      child: Text(users.last['email']),
+      child: Text(users.last.email),
     );
   }
 

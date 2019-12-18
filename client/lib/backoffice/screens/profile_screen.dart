@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 // Firebase
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
+// Models
+import 'package:Feltes/backoffice/models/User.dart';
 
 class ProfileScreen extends StatefulWidget {
   const ProfileScreen({@required this.user});
@@ -18,11 +20,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
   bool isLoading;
 
   final successSnackBar = SnackBar(
-    content: Text("Saved successfully"),
+    content: Text("Saved successfully."),
     duration: Duration(seconds: 2),
   );
   final failSnackBar = SnackBar(
-    content: Text("Saved successfully"),
+    content: Text("Failed to save details."),
     duration: Duration(seconds: 2),
   );
 
@@ -42,15 +44,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void getUser() async {
-    var data = await api.getUser(widget.user.uid);
-    user = data['user'];
+    User user = await api.getUser(widget.user.uid);
 
-    print(user['email']);
-
-    nameController = TextEditingController(text: user['name']);
-    emailController = TextEditingController(text: user['email']);
+    nameController = TextEditingController(text: user.username);
+    emailController = TextEditingController(text: user.email);
     passwordController = TextEditingController();
-    role = user['role'] == '' ? 'user' : user['role'];
+    role = user.role == '' ? 'user' : user.role;
 
     setState(() {
       isLoading = false;
@@ -67,14 +66,14 @@ class _ProfileScreenState extends State<ProfileScreen> {
       isLoading = true;
     });
 
-    var savedUser = await api.updateUser(
+    var success = await api.updateUser(
         uid: widget.user.uid,
         displayName: nameController.text,
         password: passwordController.text,
         email: emailController.text,
         role: role);
 
-    if (savedUser != null) {
+    if (success) {
       print("Saved successfully");
       Scaffold.of(context).showSnackBar(successSnackBar);
     } else {
