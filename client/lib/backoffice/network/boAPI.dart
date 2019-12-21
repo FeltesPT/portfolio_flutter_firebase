@@ -29,8 +29,8 @@ class BOAPIHelper {
       List<User> users = [];
 
       for (var j in usersJSON['users']) {
-        User u =
-            User(email: j['email'], username: j['username'], role: j['role']);
+        User u = User(
+            email: j['email'], username: j['displayName'], role: j['role']);
         users.add(u);
       }
 
@@ -68,7 +68,6 @@ class BOAPIHelper {
 
   Future addUser({
     String text,
-    String id,
     String displayName,
     String password,
     String email,
@@ -94,7 +93,7 @@ class BOAPIHelper {
     }
 
     print("Failed to update user - Error Code: ${response.statusCode}");
-    return;
+    return null;
   }
 
   Future<bool> updateUser({

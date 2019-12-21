@@ -1,22 +1,17 @@
-import 'package:Feltes/backoffice/network/boAPI.dart';
 import 'package:flutter/material.dart';
-// Firebase
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 // Models
 import 'package:Feltes/backoffice/models/User.dart';
+// Provider
+import 'package:provider/provider.dart';
+import 'package:Feltes/models/Data.dart';
 
 class ProfileScreen extends StatefulWidget {
-  const ProfileScreen({@required this.user});
-  final FirebaseUser user;
-
   @override
   _ProfileScreenState createState() => _ProfileScreenState();
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  final _auth = FirebaseAuth.instance;
-  BOAPIHelper api;
   bool isLoading;
 
   final successSnackBar = SnackBar(
@@ -28,7 +23,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
     duration: Duration(seconds: 2),
   );
 
-  var user;
   String role;
   TextEditingController nameController;
   TextEditingController emailController;
@@ -39,12 +33,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
     super.initState();
 
     isLoading = true;
-    api = BOAPIHelper();
-    getUser();
   }
 
   void getUser() async {
-    User user = await api.getUser(widget.user.uid);
+    User user = Provider.of<Data>(context, listen: false).currentUser;
 
     nameController = TextEditingController(text: user.username);
     emailController = TextEditingController(text: user.email);
@@ -56,18 +48,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
     });
   }
 
-  void logout() {
-    _auth.signOut();
-    Navigator.pop(context);
-  }
-
   void save() async {
     setState(() {
       isLoading = true;
     });
 
-    var success = await api.updateUser(
-        uid: widget.user.uid,
+    var success = await Provider.of<Data>(context).updateUser(
         displayName: nameController.text,
         password: passwordController.text,
         email: emailController.text,
@@ -88,67 +74,76 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ModalProgressHUD(
-      inAsyncCall: isLoading,
-      child: Container(
-        child: Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: Column(
-            children: <Widget>[
-              TextField(
-                controller: nameController,
-                decoration: InputDecoration(
-                  labelText: "Your username.",
-                ),
+    getUser();
+
+    return Consumer<Data>(
+      builder: (context, data, child) {
+        return ModalProgressHUD(
+          inAsyncCall: isLoading,
+          child: Container(
+            child: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: <Widget>[
+                  TextField(
+                    controller: nameController,
+                    decoration: InputDecoration(
+                      labelText: "Your username.",
+                    ),
+                  ),
+                  TextField(
+                    controller: emailController,
+                    decoration: InputDecoration(
+                      labelText: "Your email",
+                    ),
+                  ),
+                  TextField(
+                    controller: passwordController,
+                    decoration: InputDecoration(
+                      labelText: "Update password",
+                    ),
+                  ),
+                  DropdownButton<String>(
+                    value: role,
+                    icon: Icon(Icons.arrow_downward),
+                    iconSize: 24,
+                    elevation: 16,
+                    onChanged: (String newValue) {
+                      setState(() {
+                        role = newValue;
+                      });
+                    },
+                    items: <String>['', 'admin', 'manager', 'user']
+                        .map<DropdownMenuItem<String>>((String value) {
+                      return DropdownMenuItem<String>(
+                        value: value,
+                        child: Text(value),
+                      );
+                    }).toList(),
+                  ),
+                  MaterialButton(
+                    child: Text("Save"),
+                    color: Color(0xFF2C3E50),
+                    textColor: Colors.white,
+                    onPressed: () {
+                      save();
+                    },
+                  ),
+                  MaterialButton(
+                    child: Text("Logout"),
+                    color: Colors.red,
+                    textColor: Colors.white,
+                    onPressed: () {
+                      data.signOut();
+                      Navigator.pop(context);
+                    },
+                  )
+                ],
               ),
-              TextField(
-                controller: emailController,
-                decoration: InputDecoration(
-                  labelText: "Your email",
-                ),
-              ),
-              TextField(
-                controller: passwordController,
-                decoration: InputDecoration(
-                  labelText: "Update password",
-                ),
-              ),
-              DropdownButton<String>(
-                value: role,
-                icon: Icon(Icons.arrow_downward),
-                iconSize: 24,
-                elevation: 16,
-                onChanged: (String newValue) {
-                  setState(() {
-                    role = newValue;
-                  });
-                },
-                items: <String>['', 'admin', 'manager', 'user']
-                    .map<DropdownMenuItem<String>>((String value) {
-                  return DropdownMenuItem<String>(
-                    value: value,
-                    child: Text(value),
-                  );
-                }).toList(),
-              ),
-              MaterialButton(
-                child: Text("Save"),
-                color: Color(0xFF2C3E50),
-                textColor: Colors.white,
-                onPressed: () {
-                  save();
-                },
-              ),
-              MaterialButton(
-                child: Text("Logout"),
-                color: Colors.red,
-                textColor: Colors.white,
-                onPressed: logout,
-              )
-            ],
+            ),
           ),
-        ),
-      ),
+        );
+      },
     );
   }
 }
