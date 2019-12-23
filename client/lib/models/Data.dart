@@ -10,16 +10,13 @@ class Data extends ChangeNotifier {
   BOAPIHelper boAPI = BOAPIHelper();
 
   Future<bool> isLoggedIn() async {
-    if (_firebaseUser != null) {
-      return true;
-    } else {
-      FirebaseUser user = await _auth.currentUser();
+    FirebaseUser user = await _auth.currentUser();
 
-      if (user != null) {
-        _firebaseUser = user;
-        return true;
-      }
+    if (user != null) {
+      _firebaseUser = user;
+      return true;
     }
+
     return false;
   }
 
@@ -28,7 +25,7 @@ class Data extends ChangeNotifier {
   }
 
   User get currentUser {
-    return _allUsers.firstWhere((i) => i.email == _firebaseUser.email);
+    return _allUsers.firstWhere((i) => i.id == _firebaseUser.uid);
   }
 
   void fetchUsers() async {
@@ -36,10 +33,18 @@ class Data extends ChangeNotifier {
     notifyListeners();
   }
 
-  Future<bool> addUser(
-      {String displayName, String password, String email, String role}) async {
+  Future<bool> deleteUser(User user) async {
+    dynamic deleted = await boAPI.deleteUser(user);
+
+    return deleted;
+  }
+
+  Future<bool> addUser(User user) async {
     dynamic added = await boAPI.addUser(
-        displayName: displayName, password: password, email: email, role: role);
+        displayName: user.username,
+        password: user.password,
+        email: user.email,
+        role: user.role);
 
     fetchUsers();
 

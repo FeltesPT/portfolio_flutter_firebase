@@ -4,7 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:Feltes/backoffice/login.dart';
-import 'package:Feltes/backoffice/screens/add_user_screen.dart';
+import 'package:Feltes/backoffice/screens/users_list.dart';
 import 'package:Feltes/backoffice/screens/profile_screen.dart';
 
 class Backoffice extends StatefulWidget {
@@ -57,7 +57,7 @@ class _BackofficeState extends State<Backoffice> {
       case 0:
         return emptyView();
       case 2:
-        return AddUserScreen();
+        return UsersList();
       case 3:
         return ProfileScreen();
         break;

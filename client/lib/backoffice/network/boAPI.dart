@@ -30,7 +30,10 @@ class BOAPIHelper {
 
       for (var j in usersJSON['users']) {
         User u = User(
-            email: j['email'], username: j['displayName'], role: j['role']);
+            id: j['uid'],
+            email: j['email'],
+            username: j['displayName'],
+            role: j['role']);
         users.add(u);
       }
 
@@ -122,6 +125,22 @@ class BOAPIHelper {
     }
 
     print("Failed to update user - Error Code: ${response.statusCode}");
+    return false;
+  }
+
+  Future<bool> deleteUser(user) async {
+    String url = baseURL + 'users/${user.id}';
+    String token = 'Bearer ${await _getToken()}';
+
+    print(user.id);
+
+    Response response = await delete(url, headers: {'Authorization': token});
+
+    if (response.statusCode == 204) {
+      return true;
+    }
+
+    print("Failed to Delete user - Error Code: ${response.statusCode}");
     return false;
   }
 }
