@@ -132,8 +132,6 @@ class BOAPIHelper {
     String url = baseURL + 'users/${user.id}';
     String token = 'Bearer ${await _getToken()}';
 
-    print(user.id);
-
     Response response = await delete(url, headers: {'Authorization': token});
 
     if (response.statusCode == 204) {

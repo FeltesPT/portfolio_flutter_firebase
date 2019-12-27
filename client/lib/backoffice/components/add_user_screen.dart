@@ -2,8 +2,9 @@ import 'package:Feltes/backoffice/models/User.dart';
 import 'package:flutter/material.dart';
 
 class AddUser extends StatefulWidget {
-  AddUser({this.onSave});
+  AddUser({@required this.onSave, this.user});
   final Function onSave;
+  final User user;
 
   @override
   _AddUserState createState() => _AddUserState();
@@ -14,6 +15,17 @@ class _AddUserState extends State<AddUser> {
   final TextEditingController passwordController = TextEditingController();
   final TextEditingController emailController = TextEditingController();
   String role;
+
+  @override
+  void initState() {
+    super.initState();
+
+    if (widget.user != null) {
+      nameController.text = widget.user.username;
+      emailController.text = widget.user.email;
+      role = widget.user.role;
+    }
+  }
 
   @override
   Widget build(BuildContext context) {

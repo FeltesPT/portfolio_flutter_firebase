@@ -53,16 +53,16 @@ class _UsersListState extends State<UsersList> {
               ),
               actions: <Widget>[
                 FlatButton(
-                  child: Text('Cancel'),
+                  child: Text('Delete'),
                   textColor: Colors.red,
                   onPressed: () {
+                    delete(user);
                     Navigator.of(context).pop();
                   },
                 ),
                 FlatButton(
-                  child: Text('Delete'),
+                  child: Text('Cancel'),
                   onPressed: () {
-                    delete(user);
                     Navigator.of(context).pop();
                   },
                 ),
