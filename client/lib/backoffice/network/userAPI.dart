@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:Feltes/backoffice/models/User.dart';
 
-class BOAPIHelper {
+class UserAPIHelper {
   final _auth = FirebaseAuth.instance;
 
   final String baseURL =

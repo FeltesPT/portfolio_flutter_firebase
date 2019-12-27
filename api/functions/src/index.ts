@@ -3,13 +3,15 @@ import * as admin from 'firebase-admin';
 import * as express from 'express';
 import * as cors from 'cors';
 import * as bodyParser from 'body-parser';
-import { routesConfig } from './users/routes-config';
+import { userRoutesConfig } from './users/routes-config';
+import { infoRoutesConfig } from './info/routes-config';
 
-admin.initializeApp();
+admin.initializeApp(functions.config().firebase);
 
 const app = express();
 app.use(bodyParser.json());
 app.use(cors({ origin: true }));
-routesConfig(app);
+userRoutesConfig(app);
+infoRoutesConfig(app);
 
 export const api = functions.https.onRequest(app);

@@ -1,15 +1,15 @@
 import { Application } from 'express';
-import { create, all, get, patch, remove } from './controller';
+import { create, all, get, patch, remove } from './userController';
 import { isAuthenticated } from "../auth/authenticated";
 import { isAuthorized } from "../auth/authorized";
 
-export function routesConfig(app: Application) {
+export function userRoutesConfig(app: Application) {
     // adds user
-    app.post('/users',
+    app.post('/users', [
         isAuthenticated,
         isAuthorized({ hasRole: ['admin', 'manager'] }),
         create
-    );
+    ]);
     // lists all users
     app.get('/users', [
         isAuthenticated,

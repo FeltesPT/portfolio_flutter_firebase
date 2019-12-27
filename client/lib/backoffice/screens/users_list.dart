@@ -1,12 +1,12 @@
-import 'package:Feltes/backoffice/components/add_user_screen.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-// Firebase
-import 'package:modal_progress_hud/modal_progress_hud.dart';
-// Models
-import 'package:Feltes/backoffice/models/User.dart';
+import 'package:flutter/cupertino.dart';
 // Provider
 import 'package:provider/provider.dart';
+// Views
+import 'package:modal_progress_hud/modal_progress_hud.dart';
+import 'package:Feltes/backoffice/components/add_user_screen.dart';
+// Models
+import 'package:Feltes/backoffice/models/User.dart';
 import 'package:Feltes/models/Data.dart';
 
 class UsersList extends StatefulWidget {
@@ -25,9 +25,6 @@ class _UsersListState extends State<UsersList> {
     content: Text("Not saved."),
     duration: Duration(seconds: 2),
   );
-
-  var user;
-  String role;
 
   @override
   void initState() {
@@ -184,7 +181,7 @@ class _UsersListState extends State<UsersList> {
             ),
             body: Container(
               child: Padding(
-                padding: const EdgeInsets.all(8.0),
+                padding: EdgeInsets.all(8.0),
                 child: viewWithUsers(data.allUsers),
               ),
             ),

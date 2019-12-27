@@ -1,3 +1,4 @@
+import 'package:Feltes/backoffice/screens/info.dart';
 import 'package:Feltes/models/Data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
@@ -38,15 +39,19 @@ class _BackofficeState extends State<Backoffice> {
         case 0:
           title = "Backoffice";
           break;
+        case 1:
+          title = "Info";
+          break;
         case 2:
-          title = "Users";
+          title = "Portfolio";
           break;
         case 3:
+          title = "Users";
+          break;
+        case 4:
           title = "User Details";
           break;
-          break;
         default:
-          title = "Backoffice";
           break;
       }
     });
@@ -56,9 +61,11 @@ class _BackofficeState extends State<Backoffice> {
     switch (_currentIndex) {
       case 0:
         return emptyView();
-      case 2:
-        return UsersList();
+      case 1:
+        return Info();
       case 3:
+        return UsersList();
+      case 4:
         return ProfileScreen();
         break;
       default:
@@ -90,8 +97,13 @@ class _BackofficeState extends State<Backoffice> {
                 backgroundColor: Color(0xFF2C3E50),
               ),
               BottomNavigationBarItem(
-                icon: Icon(FontAwesomeIcons.addressCard),
-                title: Text("About"),
+                icon: Icon(FontAwesomeIcons.info),
+                title: Text("Info"),
+                backgroundColor: Color(0xFF2C3E50),
+              ),
+              BottomNavigationBarItem(
+                icon: Icon(FontAwesomeIcons.images),
+                title: Text("Portfolio"),
                 backgroundColor: Color(0xFF2C3E50),
               ),
               BottomNavigationBarItem(

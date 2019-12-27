@@ -1,13 +1,18 @@
 import 'package:flutter/cupertino.dart';
-import 'package:Feltes/backoffice/models/User.dart';
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:Feltes/backoffice/network/boAPI.dart';
+// Users
+import 'package:Feltes/backoffice/models/User.dart';
+import 'package:Feltes/backoffice/network/userAPI.dart';
+// Info
+import 'package:Feltes/models/Info.dart';
+import 'package:Feltes/network/infoAPI.dart';
 
 class Data extends ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
   FirebaseUser _firebaseUser;
   List<User> _allUsers;
-  BOAPIHelper boAPI = BOAPIHelper();
+  UserAPIHelper userAPI = UserAPIHelper();
+  InfoAPIHelper infoAPI = InfoAPIHelper();
 
   Future<bool> isLoggedIn() async {
     FirebaseUser user = await _auth.currentUser();
@@ -29,18 +34,18 @@ class Data extends ChangeNotifier {
   }
 
   void fetchUsers() async {
-    _allUsers = await boAPI.getUsers();
+    _allUsers = await userAPI.getUsers();
     notifyListeners();
   }
 
   Future<bool> deleteUser(User user) async {
-    dynamic deleted = await boAPI.deleteUser(user);
+    dynamic deleted = await userAPI.deleteUser(user);
 
     return deleted;
   }
 
   Future<bool> addUser(User user) async {
-    dynamic added = await boAPI.addUser(
+    dynamic added = await userAPI.addUser(
         displayName: user.username,
         password: user.password,
         email: user.email,
@@ -70,7 +75,7 @@ class Data extends ChangeNotifier {
 
   Future<bool> updateUser(
       {String displayName, String password, String email, String role}) async {
-    var success = await boAPI.updateUser(
+    var success = await userAPI.updateUser(
         uid: _firebaseUser.uid,
         displayName: displayName,
         password: password,
@@ -78,6 +83,38 @@ class Data extends ChangeNotifier {
         role: role);
 
     fetchUsers();
+
+    return success;
+  }
+
+  Future<Info> getInfo() async {
+    var info = await infoAPI.getInfo();
+
+    return info;
+  }
+
+  Future<bool> saveInfo({
+    firstname,
+    lastname,
+    title,
+    email,
+    location,
+    about,
+    twitter,
+    linkedin,
+    github,
+  }) async {
+    var success = await infoAPI.saveInfo(
+      firstname,
+      lastname,
+      title,
+      email,
+      location,
+      about,
+      twitter,
+      linkedin,
+      github,
+    );
 
     return success;
   }
