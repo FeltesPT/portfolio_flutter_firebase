@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["http|lib/http.dart","firebase_auth|lib/firebase_auth.dart","Feltes|lib/backoffice/models/User.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["convert"],"hasMain":false}

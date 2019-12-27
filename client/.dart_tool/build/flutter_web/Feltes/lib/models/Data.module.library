@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["flutter|lib/cupertino.dart","firebase_auth|lib/firebase_auth.dart","Feltes|lib/backoffice/models/User.dart","Feltes|lib/backoffice/network/userAPI.dart","Feltes|lib/models/Info.dart","Feltes|lib/network/infoAPI.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

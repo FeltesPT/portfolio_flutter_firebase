@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["flutter|lib/foundation.dart","flutter|lib/material.dart","Feltes|lib/screens/home.dart","Feltes|lib/screens/home_web.dart","provider|lib/provider.dart","Feltes|lib/models/Data.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":true}

@@ -1,1 +1,0 @@
-{"isEntrypoint":true,"deps":["flutter|lib/material.dart","modal_progress_hud|lib/modal_progress_hud.dart","provider|lib/provider.dart","Feltes|lib/models/Data.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}
