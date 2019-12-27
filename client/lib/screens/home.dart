@@ -1,4 +1,6 @@
 import 'package:Feltes/backoffice/login.dart';
+import 'package:Feltes/models/Info.dart';
+import 'package:Feltes/network/infoAPI.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 // API
@@ -18,18 +20,20 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   APIHelper api;
-  var myInfo;
+  InfoAPIHelper infoAPI;
+  Info myInfo;
 
   @override
   void initState() {
     super.initState();
 
     api = APIHelper();
+    infoAPI = InfoAPIHelper();
     getData();
   }
 
   void getData() async {
-    var data = await api.getMyInfo();
+    var data = await infoAPI.getInfo();
 
     setState(() {
       myInfo = data;
@@ -91,8 +95,8 @@ class _HomeState extends State<Home> {
           expandedHeight: 210.0,
           flexibleSpace: FlexibleSpaceBar(
             background: HomeBanner(
-              name: myInfo['name'],
-              title: myInfo['title'],
+              name: "${myInfo.first} ${myInfo.last}",
+              title: myInfo.title,
             ),
           ),
         ),
@@ -101,11 +105,11 @@ class _HomeState extends State<Home> {
             [
               Portfolio(),
               About(
-                about: myInfo['about'],
+                about: myInfo.about,
               ),
               Contact(),
               Footer(
-                location: myInfo['address'],
+                location: myInfo.location,
               ),
             ],
           ),

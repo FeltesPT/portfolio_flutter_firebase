@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 // API
 import 'package:Feltes/network/api.dart';
+import 'package:Feltes/models/Info.dart';
+import 'package:Feltes/network/infoAPI.dart';
 // Screens
 import 'package:Feltes/screens/sections/contact.dart';
 import 'package:Feltes/screens/sections/footer.dart';
@@ -16,18 +18,20 @@ class HomeWeb extends StatefulWidget {
 
 class _HomeWebState extends State<HomeWeb> {
   APIHelper api;
-  var myInfo;
+  InfoAPIHelper infoAPI;
+  Info myInfo;
 
   @override
   void initState() {
     super.initState();
 
     api = APIHelper();
+    infoAPI = InfoAPIHelper();
     getData();
   }
 
   void getData() async {
-    var data = await api.getMyInfo();
+    var data = await infoAPI.getInfo();
 
     setState(() {
       myInfo = data;
@@ -71,16 +75,16 @@ class _HomeWebState extends State<HomeWeb> {
             child: Column(
               children: <Widget>[
                 HomeBannerWeb(
-                  name: myInfo['name'],
-                  title: myInfo['title'],
+                  name: "${myInfo.first} ${myInfo.last}",
+                  title: myInfo.title,
                 ),
                 Portfolio(),
                 About(
-                  about: myInfo['about'],
+                  about: myInfo.about,
                 ),
                 Contact(),
                 Footer(
-                  location: myInfo['address'],
+                  location: myInfo.location,
                 ),
               ],
             ),

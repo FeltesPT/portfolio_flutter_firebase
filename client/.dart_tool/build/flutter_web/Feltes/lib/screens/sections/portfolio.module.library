@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter|lib/material.dart","flutter_spinkit|lib/flutter_spinkit.dart","Feltes|lib/network/api.dart","Feltes|lib/screens/components/sectionTitle.dart","Feltes|lib/screens/components/portfolio_card.dart","Feltes|lib/models/project.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":[],"hasMain":false}

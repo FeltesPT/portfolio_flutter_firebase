@@ -1,0 +1,1 @@
+{"isEntrypoint":true,"deps":["flutter_web_plugins|lib/flutter_web_plugins.dart","meta|lib/meta.dart","url_launcher_platform_interface|lib/url_launcher_platform_interface.dart"],"parts":[],"conditionalDeps":[],"sdkDeps":["async","html"],"hasMain":false}
