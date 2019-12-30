@@ -5,7 +5,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 
 class InfoAPIHelper {
   final String baseURL =
-      'https://us-central1-feltes-portfolio.cloudfunctions.net/api/';
+      'https://us-central1-feltes-portfolio.cloudfunctions.net/api/info';
 
   Future<String> _getToken() async {
     FirebaseUser user = await FirebaseAuth.instance.currentUser();
@@ -14,7 +14,7 @@ class InfoAPIHelper {
   }
 
   Future<Info> getInfo() async {
-    String url = baseURL + 'info';
+    String url = baseURL;
 
     Response response = await get(url);
 
@@ -54,7 +54,7 @@ class InfoAPIHelper {
     linkedin,
     github,
   ) async {
-    String url = baseURL + 'info';
+    String url = baseURL;
 
     String token = 'Bearer ${await _getToken()}';
 

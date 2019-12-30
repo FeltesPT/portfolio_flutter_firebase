@@ -7,6 +7,7 @@ import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:Feltes/backoffice/login.dart';
 import 'package:Feltes/backoffice/screens/users_list.dart';
 import 'package:Feltes/backoffice/screens/profile_screen.dart';
+import 'package:Feltes/backoffice/screens/portfolio.dart';
 
 class Backoffice extends StatefulWidget {
   @override
@@ -63,6 +64,8 @@ class _BackofficeState extends State<Backoffice> {
         return emptyView();
       case 1:
         return Info();
+      case 2:
+        return Portfolio();
       case 3:
         return UsersList();
       case 4:
@@ -121,6 +124,7 @@ class _BackofficeState extends State<Backoffice> {
           appBar: AppBar(
             title: Text(title),
             backgroundColor: Color(0xFF2C3E50),
+            leading: Container(),
           ),
           body: getWidget(),
         );

@@ -11,7 +11,6 @@ class ProjectScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var img = 'https://feltes.herokuapp.com/Portfolio/${project.imageName}';
     return Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFF2c3e50),
@@ -25,8 +24,8 @@ class ProjectScreen extends StatelessWidget {
           child: Column(
             children: <Widget>[
               Hero(
-                tag: project.imageName,
-                child: Image.network(img),
+                tag: project.title,
+                child: Image.network(project.imageURL),
               ),
               SizedBox(
                 height: 18,

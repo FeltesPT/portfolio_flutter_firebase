@@ -33,7 +33,7 @@ class _PortfolioState extends State<Portfolio> {
       var proj = Project(
           title: projInfo['name'],
           description: projInfo['description'],
-          imageName: projInfo['photo'],
+          imageURL: projInfo['photo'],
           url: projInfo['url']);
 
       projects.add(proj);

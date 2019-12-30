@@ -4,6 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:Feltes/screens/project_screen.dart';
 import 'package:Feltes/models/project.dart';
 
+import 'package:firebase_storage/firebase_storage.dart';
+
 class PortfolioCard extends StatelessWidget {
   final Project project;
 
@@ -14,7 +16,6 @@ class PortfolioCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    var img = 'https://feltes.herokuapp.com/Portfolio/${project.imageName}';
     return Card(
       color: Colors.white,
       elevation: 2,
@@ -49,9 +50,9 @@ class PortfolioCard extends StatelessWidget {
                 height: 8.0,
               ),
               Hero(
-                tag: project.imageName,
+                tag: project.title,
                 child: Image.network(
-                  img,
+                  project.imageURL,
                   width: 150,
                   height: 100,
                 ),

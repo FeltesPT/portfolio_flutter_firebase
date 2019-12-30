@@ -6,6 +6,9 @@ import 'package:Feltes/backoffice/network/userAPI.dart';
 // Info
 import 'package:Feltes/models/Info.dart';
 import 'package:Feltes/network/infoAPI.dart';
+// Portfolio
+import 'package:Feltes/models/project.dart';
+import 'package:Feltes/network/portfolioAPI.dart';
 
 class Data extends ChangeNotifier {
   FirebaseAuth _auth = FirebaseAuth.instance;
@@ -13,6 +16,7 @@ class Data extends ChangeNotifier {
   List<User> _allUsers;
   UserAPIHelper userAPI = UserAPIHelper();
   InfoAPIHelper infoAPI = InfoAPIHelper();
+  PortfolioAPIHelper portfolioAPI = PortfolioAPIHelper();
 
   Future<bool> isLoggedIn() async {
     FirebaseUser user = await _auth.currentUser();
@@ -88,9 +92,7 @@ class Data extends ChangeNotifier {
   }
 
   Future<Info> getInfo() async {
-    var info = await infoAPI.getInfo();
-
-    return info;
+    return await infoAPI.getInfo();
   }
 
   Future<bool> saveInfo({
@@ -104,7 +106,7 @@ class Data extends ChangeNotifier {
     linkedin,
     github,
   }) async {
-    var success = await infoAPI.saveInfo(
+    return await infoAPI.saveInfo(
       firstname,
       lastname,
       title,
@@ -115,7 +117,21 @@ class Data extends ChangeNotifier {
       linkedin,
       github,
     );
+  }
 
-    return success;
+  Future<List<Project>> getPortfolio() async {
+    return await portfolioAPI.getPortfolio();
+  }
+
+  Future<Project> getProject(String id) async {
+    return await portfolioAPI.getProject(id);
+  }
+
+  Future<bool> deleteProject(String id) async {
+    return await portfolioAPI.deleteProject(id);
+  }
+
+  Future<bool> saveProject(Project project) async {
+    return await portfolioAPI.saveProject(project);
   }
 }

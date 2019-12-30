@@ -1,5 +1,5 @@
 import { Application } from 'express';
-import { set, get, remove } from './infoController';
+import { set, get, remove } from './controller';
 import { isAuthenticated } from "../auth/authenticated";
 import { isAuthorized } from "../auth/authorized";
 
