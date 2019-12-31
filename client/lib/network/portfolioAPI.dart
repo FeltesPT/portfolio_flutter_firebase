@@ -101,33 +101,27 @@ class PortfolioAPIHelper {
   }
 
   Future<bool> saveProject(Project project) async {
-    String url = baseURL;
-
     String token = 'Bearer ${await _getToken()}';
+
+    var header = {'Authorization': token};
+    var body = {
+      'title': project.title,
+      'description': project.description,
+      'url': project.url,
+      'date': project.date,
+    };
+
+    if (project.imageURL != null) {
+      body['imageURL'] = project.imageURL;
+    }
 
     Response response;
 
     if (project.uid == null) {
-      response = await post(url, headers: {
-        'Authorization': token
-      }, body: {
-        'title': project.title,
-        'description': project.description,
-        'imageURL': project.imageURL,
-        'url': project.url,
-        'date': project.date,
-      });
+      response = await post(baseURL, headers: header, body: body);
     } else {
-      response = await patch(url, headers: {
-        'Authorization': token
-      }, body: {
-        'uid': project.uid,
-        'title': project.title,
-        'description': project.description,
-        'imageURL': project.imageURL,
-        'url': project.url,
-        'date': project.date,
-      });
+      response =
+          await patch('$baseURL${project.uid}', headers: header, body: body);
     }
 
     if (project.uid == null && response.statusCode == 201) {

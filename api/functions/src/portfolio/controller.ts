@@ -16,7 +16,7 @@ export async function create(req: Request, res: Response) {
         // TODO: Doesn't work, update soon
         const order = docRef.collection.length;
 
-        const result = docRef.set({ order, title, description, imageURL, url, date }, { merge: true });
+        const result = await docRef.set({ order, title, description, imageURL, url, date }, { merge: true });
 
         return res.status(201).send({ result });
     } catch (err) {
@@ -29,7 +29,7 @@ export async function all(req: Request, res: Response) {
     const docRef = db.collection('portfolio');
 
     try {
-        const portfolio = await (docRef.get());
+        const portfolio = await (docRef.orderBy('order').get());
         const projects = portfolio.docs.map(doc => {
             let project = doc.data();
             project.uid = doc.id;
@@ -57,16 +57,21 @@ export async function get(req: Request, res: Response) {
 export async function patch(req: Request, res: Response) {
     const db = admin.firestore();
 
-    const docRef = db.collection('portfolio').doc();
-
     try {
-        const { id, order, title, description, imageURL, url, date } = req.body;
+        const { id } = req.params
+        const { title, description, imageURL, url, date } = req.body;
 
-        if (!id || !title || !description || !imageURL || !url || !date) {
+        if (!id || !title || !description || !url || !date) {
             return res.status(400).send({ message: 'Missing Fields' });
         }
 
-        const result = docRef.update(id, { title, order, description, imageURL, url, date });
+        const docRef = db.collection('portfolio').doc(id);
+
+        var result = await docRef.update({ title, description, url, date });
+
+        if (imageURL != null) {
+            result = await docRef.update({ imageURL });
+        }
 
         return res.status(204).send({ result });
     } catch (err) {

@@ -7,19 +7,21 @@ import 'package:Feltes/network/portfolioAPI.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class AddProject extends StatefulWidget {
-  const AddProject({Key key, this.onSave}) : super(key: key);
+  const AddProject({Key key, @required this.onSave, this.project})
+      : super(key: key);
   final Function onSave;
+  final Project project;
 
   @override
   _AddProjectState createState() => _AddProjectState();
 }
 
 class _AddProjectState extends State<AddProject> {
+  final TextEditingController _titleController = TextEditingController();
   final TextEditingController _descriptionController = TextEditingController();
   final TextEditingController _urlController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
 
-  String _title;
   File _image;
   bool isLoading;
 
@@ -29,11 +31,12 @@ class _AddProjectState extends State<AddProject> {
 
     isLoading = false;
 
-    // if (widget.user != null) {
-    //   nameController.text = widget.user.username;
-    //   emailController.text = widget.user.email;
-    //   role = widget.user.role;
-    // }
+    if (widget.project != null) {
+      _titleController.text = widget.project.title;
+      _descriptionController.text = widget.project.description;
+      _urlController.text = widget.project.url;
+      _dateController.text = widget.project.date;
+    }
   }
 
   Future getImage() async {
@@ -50,13 +53,13 @@ class _AddProjectState extends State<AddProject> {
   }
 
   Future<String> saveImage() async {
-    if (_title != null && _image != null) {
+    if (_titleController.text != null && _image != null) {
       var api = PortfolioAPIHelper();
-      return await api.uploadImage(_image, _title);
+      return await api.uploadImage(_image, _titleController.text);
     } else {
       // TODO: Throw warning to set the title first
     }
-    return '';
+    return null;
   }
 
   void saveProject() async {
@@ -67,11 +70,13 @@ class _AddProjectState extends State<AddProject> {
     var url = await saveImage();
     widget.onSave(
       Project(
-          title: _title,
-          description: _descriptionController.text,
-          url: _urlController.text,
-          imageURL: url,
-          date: _urlController.text),
+        uid: widget.project != null ? widget.project?.uid : null,
+        title: _titleController.text,
+        description: _descriptionController.text,
+        url: _urlController.text,
+        imageURL: url,
+        date: _dateController.text,
+      ),
     );
 
     setState(() {
@@ -94,11 +99,7 @@ class _AddProjectState extends State<AddProject> {
             child: Column(
               children: <Widget>[
                 TextField(
-                  onChanged: (newValue) {
-                    setState(() {
-                      _title = newValue;
-                    });
-                  },
+                  controller: _titleController,
                   decoration: InputDecoration(
                     labelText: "Project title.",
                   ),
@@ -131,7 +132,12 @@ class _AddProjectState extends State<AddProject> {
                   padding: EdgeInsets.zero,
                   height: 150,
                   width: 150,
-                  child: _image != null ? Image.file(_image) : null,
+                  child: _image != null
+                      ? Image.file(_image)
+                      : widget.project != null &&
+                              widget.project.imageURL != null
+                          ? Image.network(widget.project.imageURL)
+                          : null,
                 ),
                 MaterialButton(
                   child: Text("Save"),

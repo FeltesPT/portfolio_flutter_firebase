@@ -55,6 +55,8 @@ class _PortfolioState extends State<Portfolio> {
         list.last.children.add(
           PortfolioCard(
             project: project,
+            isEditing: true,
+            onSave: onSave,
           ),
         );
       } else {
@@ -64,6 +66,8 @@ class _PortfolioState extends State<Portfolio> {
             children: <Widget>[
               PortfolioCard(
                 project: project,
+                isEditing: true,
+                onSave: onSave,
               ),
             ],
           ),
@@ -72,6 +76,22 @@ class _PortfolioState extends State<Portfolio> {
     }
 
     return list;
+  }
+
+  void onSave(Project project) async {
+    bool success =
+        await Provider.of<Data>(context, listen: false).saveProject(project);
+    Navigator.pop(context);
+
+    if (success) {
+      print("Saved successfully");
+      Scaffold.of(context).showSnackBar(successSnackBar);
+    } else {
+      print("Not saved successfully");
+      Scaffold.of(context).showSnackBar(failSnackBar);
+    }
+
+    getInfo();
   }
 
   @override
@@ -86,25 +106,13 @@ class _PortfolioState extends State<Portfolio> {
                 backgroundColor: Colors.lightBlueAccent,
                 child: Icon(Icons.add),
                 onPressed: () {
-                  // showModalBottomSheet(
-                  //   context: context,
-                  //   builder: (context) => AddProject(
-                  //     onSave: (project) {
-                  //       Provider.of<Data>(context, listen: false)
-                  //           .saveProject(project);
-                  //       Navigator.pop(context);
-                  //     },
-                  //   ),
-                  // );
                   Navigator.push(
                     context,
                     MaterialPageRoute(
                       builder: (context) {
                         return AddProject(
                           onSave: (project) {
-                            Provider.of<Data>(context, listen: false)
-                                .saveProject(project);
-                            Navigator.pop(context);
+                            onSave(project);
                           },
                         );
                       },

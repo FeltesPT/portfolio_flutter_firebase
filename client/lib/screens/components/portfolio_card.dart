@@ -1,17 +1,20 @@
+import 'package:Feltes/backoffice/components/add_project_screen.dart';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 
 import 'package:Feltes/screens/project_screen.dart';
 import 'package:Feltes/models/project.dart';
 
-import 'package:firebase_storage/firebase_storage.dart';
-
 class PortfolioCard extends StatelessWidget {
   final Project project;
+  final bool isEditing;
+  final Function onSave;
 
   const PortfolioCard({
     Key key,
     @required this.project,
+    this.isEditing = false,
+    this.onSave,
   }) : super(key: key);
 
   @override
@@ -26,9 +29,16 @@ class PortfolioCard extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return ProjectScreen(
-                  project: project,
-                );
+                return isEditing
+                    ? AddProject(
+                        project: project,
+                        onSave: (project) {
+                          onSave(project);
+                        },
+                      )
+                    : ProjectScreen(
+                        project: project,
+                      );
               },
             ),
           );

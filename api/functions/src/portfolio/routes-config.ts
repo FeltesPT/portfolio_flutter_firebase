@@ -17,13 +17,13 @@ export function portfolioRoutesConfig(app: Application) {
     // get project :id
     app.get('/portfolio/:id', [
         isAuthenticated,
-        isAuthorized({ hasRole: ['admin', 'manager'], allowSameUser: true }),
+        isAuthorized({ hasRole: ['admin', 'manager'] }),
         get
     ]);
     // updates project :id
     app.patch('/portfolio/:id', [
         isAuthenticated,
-        isAuthorized({ hasRole: ['admin', 'manager'], allowSameUser: true }),
+        isAuthorized({ hasRole: ['admin', 'manager'] }),
         patch
     ]);
     // deletes project :id
