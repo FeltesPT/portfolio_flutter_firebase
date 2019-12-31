@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 // API
-import 'package:Feltes/network/api.dart';
+import 'package:Feltes/network/portfolioAPI.dart';
 // Components
 import 'package:Feltes/screens/components/sectionTitle.dart';
 import 'package:Feltes/screens/components/portfolio_card.dart';
@@ -14,14 +14,14 @@ class Portfolio extends StatefulWidget {
 }
 
 class _PortfolioState extends State<Portfolio> {
-  APIHelper api;
+  PortfolioAPIHelper api;
   List<Project> myProjects;
 
   @override
   void initState() {
     super.initState();
 
-    api = APIHelper();
+    api = PortfolioAPIHelper();
     getData();
   }
 
@@ -31,10 +31,11 @@ class _PortfolioState extends State<Portfolio> {
     List<Project> projects = [];
     for (var projInfo in data) {
       var proj = Project(
-          title: projInfo['name'],
-          description: projInfo['description'],
-          imageURL: projInfo['photo'],
-          url: projInfo['url']);
+        title: projInfo.title,
+        description: projInfo.description,
+        imageURL: projInfo.imageURL,
+        url: projInfo.url,
+      );
 
       projects.add(proj);
     }

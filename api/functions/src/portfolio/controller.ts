@@ -13,7 +13,10 @@ export async function create(req: Request, res: Response) {
             return res.status(400).send({ message: 'Missing Fields' });
         }
 
-        const result = docRef.set({ title, description, imageURL, url, date }, { merge: true });
+        // TODO: Doesn't work, update soon
+        const order = docRef.collection.length;
+
+        const result = docRef.set({ order, title, description, imageURL, url, date }, { merge: true });
 
         return res.status(201).send({ result });
     } catch (err) {
@@ -57,13 +60,13 @@ export async function patch(req: Request, res: Response) {
     const docRef = db.collection('portfolio').doc();
 
     try {
-        const { id, title, description, imageURL, url, date } = req.body;
+        const { id, order, title, description, imageURL, url, date } = req.body;
 
         if (!id || !title || !description || !imageURL || !url || !date) {
             return res.status(400).send({ message: 'Missing Fields' });
         }
 
-        const result = docRef.update(id, { title, description, imageURL, url, date });
+        const result = docRef.update(id, { title, order, description, imageURL, url, date });
 
         return res.status(204).send({ result });
     } catch (err) {
