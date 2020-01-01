@@ -138,13 +138,21 @@ class PortfolioAPIHelper {
   Future<bool> deleteProject(String uid) async {
     String url = "$baseURL$uid";
 
-    Response response = await delete(url);
+    String token = 'Bearer ${await _getToken()}';
+
+    var header = {'Authorization': token};
+
+    Response response = await delete(
+      url,
+      headers: header,
+    );
 
     if (response.statusCode == 204) {
       return true;
     }
 
-    print("Failed to delete project - Error Code: ${response.statusCode}");
+    print(
+        "Failed to delete project - Error Code: ${response.statusCode} - ${response.body}");
     return false;
   }
 }

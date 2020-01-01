@@ -57,6 +57,7 @@ class _PortfolioState extends State<Portfolio> {
             project: project,
             isEditing: true,
             onSave: onSave,
+            onDelete: onDelete,
           ),
         );
       } else {
@@ -68,6 +69,7 @@ class _PortfolioState extends State<Portfolio> {
                 project: project,
                 isEditing: true,
                 onSave: onSave,
+                onDelete: onDelete,
               ),
             ],
           ),
@@ -88,6 +90,22 @@ class _PortfolioState extends State<Portfolio> {
       Scaffold.of(context).showSnackBar(successSnackBar);
     } else {
       print("Not saved successfully");
+      Scaffold.of(context).showSnackBar(failSnackBar);
+    }
+
+    getInfo();
+  }
+
+  void onDelete(Project project) async {
+    bool success = await Provider.of<Data>(context, listen: false)
+        .deleteProject(project.uid);
+    Navigator.pop(context);
+
+    if (success) {
+      print("Deleted project successfully");
+      Scaffold.of(context).showSnackBar(successSnackBar);
+    } else {
+      print("Coulnd't delete project");
       Scaffold.of(context).showSnackBar(failSnackBar);
     }
 

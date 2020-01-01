@@ -9,12 +9,14 @@ class PortfolioCard extends StatelessWidget {
   final Project project;
   final bool isEditing;
   final Function onSave;
+  final Function onDelete;
 
   const PortfolioCard({
     Key key,
     @required this.project,
     this.isEditing = false,
     this.onSave,
+    this.onDelete,
   }) : super(key: key);
 
   @override
@@ -35,6 +37,9 @@ class PortfolioCard extends StatelessWidget {
                         onSave: (project) {
                           onSave(project);
                         },
+                        onDelete: (project) {
+                          onDelete(project);
+                        },
                       )
                     : ProjectScreen(
                         project: project,
@@ -43,39 +48,45 @@ class PortfolioCard extends StatelessWidget {
             ),
           );
         },
-        child: Container(
-          constraints: BoxConstraints(maxWidth: 180),
-          padding: EdgeInsets.all(16.0),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              FittedBox(
-                child: Text(
-                  project.title,
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  maxLines: 1,
+        child: GestureDetector(
+          onLongPress: () {
+            onDelete(project);
+          },
+          child: Container(
+            constraints: BoxConstraints(maxWidth: 180),
+            padding: EdgeInsets.all(16.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: <Widget>[
+                FittedBox(
+                  child: Text(
+                    project.title,
+                    style:
+                        TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
+                    maxLines: 1,
+                  ),
                 ),
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Hero(
-                tag: project.title,
-                child: Image.network(
-                  project.imageURL,
-                  width: 150,
-                  height: 100,
+                SizedBox(
+                  height: 8.0,
                 ),
-              ),
-              SizedBox(
-                height: 8.0,
-              ),
-              Text(
-                project.description,
-                overflow: TextOverflow.ellipsis,
-                maxLines: 2,
-              ),
-            ],
+                Hero(
+                  tag: project.title,
+                  child: Image.network(
+                    project.imageURL,
+                    width: 150,
+                    height: 100,
+                  ),
+                ),
+                SizedBox(
+                  height: 8.0,
+                ),
+                Text(
+                  project.description,
+                  overflow: TextOverflow.ellipsis,
+                  maxLines: 2,
+                ),
+              ],
+            ),
           ),
         ),
       ),

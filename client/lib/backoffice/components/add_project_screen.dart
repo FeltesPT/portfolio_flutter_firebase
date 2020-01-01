@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
 
@@ -7,9 +8,11 @@ import 'package:Feltes/network/portfolioAPI.dart';
 import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class AddProject extends StatefulWidget {
-  const AddProject({Key key, @required this.onSave, this.project})
+  const AddProject(
+      {Key key, @required this.onSave, this.project, this.onDelete})
       : super(key: key);
   final Function onSave;
+  final Function onDelete;
   final Project project;
 
   @override
@@ -84,6 +87,18 @@ class _AddProjectState extends State<AddProject> {
     });
   }
 
+  void deleteProject() async {
+    setState(() {
+      isLoading = true;
+    });
+
+    widget.onDelete(widget.project);
+
+    setState(() {
+      isLoading = false;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -97,6 +112,8 @@ class _AddProjectState extends State<AddProject> {
           child: Container(
             padding: EdgeInsets.all(16),
             child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceAround,
+              crossAxisAlignment: CrossAxisAlignment.stretch,
               children: <Widget>[
                 TextField(
                   controller: _titleController,
@@ -122,16 +139,13 @@ class _AddProjectState extends State<AddProject> {
                     labelText: "Date",
                   ),
                 ),
-                MaterialButton(
-                  child: Text("Upload image"),
-                  color: Color(0xFF2C3E50),
-                  textColor: Colors.white,
-                  onPressed: getImage,
-                ),
                 Container(
-                  padding: EdgeInsets.zero,
-                  height: 150,
-                  width: 150,
+                  padding: EdgeInsets.all(16),
+                  height: _image != null ||
+                          (widget.project != null &&
+                              widget.project.imageURL != null)
+                      ? 150
+                      : 0,
                   child: _image != null
                       ? Image.file(_image)
                       : widget.project != null &&
@@ -139,13 +153,30 @@ class _AddProjectState extends State<AddProject> {
                           ? Image.network(widget.project.imageURL)
                           : null,
                 ),
-                MaterialButton(
-                  child: Text("Save"),
+                RaisedButton.icon(
+                  icon: Icon(FontAwesomeIcons.fileUpload),
+                  label: Text("Upload image"),
                   color: Color(0xFF2C3E50),
                   textColor: Colors.white,
-                  onPressed: () async {
-                    saveProject();
-                  },
+                  onPressed: getImage,
+                ),
+                RaisedButton.icon(
+                  icon: Icon(FontAwesomeIcons.marker),
+                  label: Text("Save"),
+                  color: Color(0xFF2C3E50),
+                  textColor: Colors.white,
+                  onPressed: saveProject,
+                ),
+                Container(
+                  child: widget.onDelete != null
+                      ? RaisedButton.icon(
+                          icon: Icon(FontAwesomeIcons.eraser),
+                          label: Text("Delete"),
+                          color: Color(0xFFa57282),
+                          textColor: Colors.white,
+                          onPressed: deleteProject,
+                        )
+                      : null,
                 ),
               ],
             ),
