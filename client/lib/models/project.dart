@@ -14,4 +14,30 @@ class Project {
     this.url,
     this.date,
   });
+
+  factory Project.fromJson(Map<String, dynamic> json) {
+    return Project(
+      uid: json['uid'],
+      title: json['title'],
+      description: json['description'],
+      imageURL: json['imageURL'],
+      url: json['url'],
+      date: json['date'],
+    );
+  }
+
+  Map<String, dynamic> toJson() {
+    var json = {
+      'title': title,
+      'description': description,
+      'url': url,
+      'date': date,
+    };
+
+    if (imageURL != null) {
+      json['imageURL'] = imageURL;
+    }
+
+    return json;
+  }
 }

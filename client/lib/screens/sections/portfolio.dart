@@ -113,7 +113,7 @@ class _PortfolioState extends State<Portfolio> {
           Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: createList(numInRow),
-          ),
+          )
         ],
       ),
     );

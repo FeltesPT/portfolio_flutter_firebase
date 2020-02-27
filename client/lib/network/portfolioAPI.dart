@@ -58,14 +58,7 @@ class PortfolioAPIHelper {
       List<Project> portfolio = [];
 
       for (var j in json['projects']) {
-        Project project = Project(
-          uid: j['uid'],
-          title: j['title'],
-          description: j['description'],
-          imageURL: j['imageURL'],
-          url: j['url'],
-          date: j['date'],
-        );
+        Project project = Project.fromJson(j);
         portfolio.add(project);
       }
 
@@ -84,14 +77,7 @@ class PortfolioAPIHelper {
     if (response.statusCode == 200) {
       Map<String, dynamic> json = jsonDecode(response.body)['portfolio'];
 
-      Project project = Project(
-        uid: json['uid'],
-        title: json['title'],
-        description: json['description'],
-        imageURL: json['imageURL'],
-        url: json['url'],
-        date: json['date'],
-      );
+      Project project = Project.fromJson(json);
 
       return project;
     }
@@ -104,16 +90,7 @@ class PortfolioAPIHelper {
     String token = 'Bearer ${await _getToken()}';
 
     var header = {'Authorization': token};
-    var body = {
-      'title': project.title,
-      'description': project.description,
-      'url': project.url,
-      'date': project.date,
-    };
-
-    if (project.imageURL != null) {
-      body['imageURL'] = project.imageURL;
-    }
+    var body = project.toJson();
 
     Response response;
 
@@ -137,6 +114,27 @@ class PortfolioAPIHelper {
 
   Future<bool> deleteProject(String uid) async {
     String url = "$baseURL$uid";
+
+    String token = 'Bearer ${await _getToken()}';
+
+    var header = {'Authorization': token};
+
+    Response response = await delete(
+      url,
+      headers: header,
+    );
+
+    if (response.statusCode == 204) {
+      return true;
+    }
+
+    print(
+        "Failed to delete project - Error Code: ${response.statusCode} - ${response.body}");
+    return false;
+  }
+
+  Future<bool> reorderProjects(int oldIndex, int newIndex) async {
+    String url = "$baseURL";
 
     String token = 'Bearer ${await _getToken()}';
 

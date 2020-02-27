@@ -20,4 +20,32 @@ class Info {
     this.linkedIn,
     this.github,
   });
+
+  factory Info.fromJson(Map<String, dynamic> json) {
+    return Info(
+      first: json['first'],
+      last: json['last'],
+      title: json['title'],
+      email: json['email'],
+      location: json['location'],
+      about: json['about'],
+      twitter: json['twitter'],
+      linkedIn: json['linkedin'],
+      github: json['github'],
+    );
+  }
+
+  Map<String, String> toJson() {
+    return {
+      'first': first,
+      'last': last,
+      'title': title,
+      'email': email,
+      'location': location,
+      'about': about,
+      'twitter': twitter,
+      'linkedin': linkedIn,
+      'github': github,
+    };
+  }
 }

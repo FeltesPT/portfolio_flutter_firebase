@@ -4,13 +4,14 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 // Models
 import 'package:provider/provider.dart';
 import 'package:Feltes/models/Data.dart';
+import 'package:Feltes/models/Info.dart';
 
-class Info extends StatefulWidget {
+class InfoScreen extends StatefulWidget {
   @override
-  _InfoState createState() => _InfoState();
+  _InfoScreenState createState() => _InfoScreenState();
 }
 
-class _InfoState extends State<Info> {
+class _InfoScreenState extends State<InfoScreen> {
   final TextEditingController firstnameController = TextEditingController();
   final TextEditingController lastnameController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
@@ -59,17 +60,18 @@ class _InfoState extends State<Info> {
   }
 
   void save() async {
-    bool success = await Provider.of<Data>(context, listen: false).saveInfo(
-      firstname: firstnameController.text,
-      lastname: lastnameController.text,
+    bool success =
+        await Provider.of<Data>(context, listen: false).saveInfo(Info(
+      first: firstnameController.text,
+      last: lastnameController.text,
       title: titleController.text,
       email: emailController.text,
       location: locationController.text,
       about: aboutController.text,
       twitter: twitterController.text,
-      linkedin: linkedinController.text,
+      linkedIn: linkedinController.text,
       github: githubController.text,
-    );
+    ));
 
     if (success) {
       Scaffold.of(context).showSnackBar(successSnackBar);

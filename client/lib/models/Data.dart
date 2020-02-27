@@ -95,28 +95,8 @@ class Data extends ChangeNotifier {
     return await infoAPI.getInfo();
   }
 
-  Future<bool> saveInfo({
-    firstname,
-    lastname,
-    title,
-    email,
-    location,
-    about,
-    twitter,
-    linkedin,
-    github,
-  }) async {
-    return await infoAPI.saveInfo(
-      firstname,
-      lastname,
-      title,
-      email,
-      location,
-      about,
-      twitter,
-      linkedin,
-      github,
-    );
+  Future<bool> saveInfo(Info info) async {
+    return await infoAPI.saveInfo(info);
   }
 
   Future<List<Project>> getPortfolio() async {
@@ -133,5 +113,9 @@ class Data extends ChangeNotifier {
 
   Future<bool> saveProject(Project project) async {
     return await portfolioAPI.saveProject(project);
+  }
+
+  Future<bool> reorderProjects(int oldIndex, int newIndex) async {
+    return await portfolioAPI.reorderProjects(oldIndex, newIndex);
   }
 }

@@ -21,17 +21,7 @@ class InfoAPIHelper {
     if (response.statusCode == 200) {
       Map<String, dynamic> json = jsonDecode(response.body)['info'];
 
-      Info info = Info(
-        first: json['first'],
-        last: json['last'],
-        title: json['title'],
-        email: json['email'],
-        location: json['location'],
-        about: json['about'],
-        twitter: json['twitter'],
-        linkedIn: json['linkedin'],
-        github: json['github'],
-      );
+      Info info = Info.fromJson(json);
 
       if (json.length == 0) {}
 
@@ -43,34 +33,13 @@ class InfoAPIHelper {
     return null;
   }
 
-  Future<bool> saveInfo(
-    first,
-    last,
-    title,
-    email,
-    location,
-    about,
-    twitter,
-    linkedin,
-    github,
-  ) async {
+  Future<bool> saveInfo(Info info) async {
     String url = baseURL;
 
     String token = 'Bearer ${await _getToken()}';
 
-    Response response = await post(url, headers: {
-      'Authorization': token
-    }, body: {
-      'first': first,
-      'last': last,
-      'title': title,
-      'email': email,
-      'location': location,
-      'about': about,
-      'twitter': twitter,
-      'linkedin': linkedin,
-      'github': github,
-    });
+    Response response =
+        await post(url, headers: {'Authorization': token}, body: info.toJson());
 
     if (response.statusCode == 201) {
       return true;

@@ -47,34 +47,18 @@ class _PortfolioState extends State<Portfolio> {
     });
   }
 
-  List<Row> createList(int numInRow) {
-    List<Row> list = [];
+  List<PortfolioCard> createList() {
+    List<PortfolioCard> list = [];
 
     for (var project in portfolio) {
-      if (list.isNotEmpty && list.last.children.length <= numInRow - 1) {
-        list.last.children.add(
-          PortfolioCard(
-            project: project,
-            isEditing: true,
-            onSave: onSave,
-            onDelete: onDelete,
-          ),
-        );
-      } else {
-        list.add(
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              PortfolioCard(
-                project: project,
-                isEditing: true,
-                onSave: onSave,
-                onDelete: onDelete,
-              ),
-            ],
-          ),
-        );
-      }
+      list.add(
+        PortfolioCard(
+          project: project,
+          isEditing: true,
+          onSave: onSave,
+          onDelete: onDelete,
+        ),
+      );
     }
 
     return list;
@@ -112,6 +96,19 @@ class _PortfolioState extends State<Portfolio> {
     getInfo();
   }
 
+  void reorder(int oldIndex, int newIndex) async {
+    bool success = await Provider.of<Data>(context, listen: false)
+        .reorderProjects(oldIndex, newIndex);
+
+    if (success) {
+      print("Deleted project successfully");
+      Scaffold.of(context).showSnackBar(successSnackBar);
+    } else {
+      print("Coulnd't delete project");
+      Scaffold.of(context).showSnackBar(failSnackBar);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<Data>(
@@ -120,35 +117,31 @@ class _PortfolioState extends State<Portfolio> {
           child: ModalProgressHUD(
             inAsyncCall: isLoading,
             child: Scaffold(
-              floatingActionButton: FloatingActionButton(
-                backgroundColor: Colors.lightBlueAccent,
-                child: Icon(Icons.add),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) {
-                        return AddProject(
-                          onSave: (project) {
-                            onSave(project);
-                          },
-                        );
-                      },
-                    ),
-                  );
-                },
-              ),
-              body: SingleChildScrollView(
-                child: Container(
-                  child: Padding(
-                    padding: EdgeInsets.all(8.0),
-                    child: Column(
-                      children: createList(2),
-                    ),
-                  ),
+                floatingActionButton: FloatingActionButton(
+                  backgroundColor: Colors.lightBlueAccent,
+                  child: Icon(Icons.add),
+                  onPressed: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) {
+                          return AddProject(
+                            onSave: (project) {
+                              onSave(project);
+                            },
+                          );
+                        },
+                      ),
+                    );
+                  },
                 ),
-              ),
-            ),
+                body: ReorderableListView(
+                  children: createList(),
+                  padding: EdgeInsets.all(16),
+                  onReorder: (oldIndex, newIndex) {
+                    reorder(oldIndex, newIndex);
+                  },
+                )),
           ),
         );
       },

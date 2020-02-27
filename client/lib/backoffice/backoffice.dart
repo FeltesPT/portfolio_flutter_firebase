@@ -1,10 +1,10 @@
-import 'package:Feltes/backoffice/screens/info.dart';
 import 'package:Feltes/models/Data.dart';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 
 import 'package:Feltes/backoffice/login.dart';
+import 'package:Feltes/backoffice/screens/info_screen.dart';
 import 'package:Feltes/backoffice/screens/users_list.dart';
 import 'package:Feltes/backoffice/screens/profile_screen.dart';
 import 'package:Feltes/backoffice/screens/portfolio.dart';
@@ -63,7 +63,7 @@ class _BackofficeState extends State<Backoffice> {
       case 0:
         return emptyView();
       case 1:
-        return Info();
+        return InfoScreen();
       case 2:
         return Portfolio();
       case 3:
