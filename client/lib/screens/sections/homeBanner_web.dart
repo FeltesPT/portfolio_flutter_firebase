@@ -18,12 +18,11 @@ class HomeBannerWeb extends StatelessWidget {
         alignment: Alignment.center,
         children: <Widget>[
           Opacity(
-            opacity: 0.6,
-            child: Image.network(
-              "https://source.unsplash.com/3200x1800/?technology",
-              fit: BoxFit.fitWidth,
-            ),
-          ),
+              opacity: 0.6,
+              child: Image.asset(
+                'images/banner.jpg',
+                fit: BoxFit.fitWidth,
+              )),
           Container(
             child: Column(
               children: <Widget>[
