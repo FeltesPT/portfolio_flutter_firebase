@@ -1,5 +1,5 @@
 import { Application } from 'express';
-import { create, all, get, patch, remove } from './controller';
+import { create, all, get, patch, remove, reorder } from './controller';
 import { isAuthenticated } from "../auth/authenticated";
 import { isAuthorized } from "../auth/authorized";
 
@@ -31,5 +31,11 @@ export function portfolioRoutesConfig(app: Application) {
         isAuthenticated,
         isAuthorized({ hasRole: ['admin', 'manager'] }),
         remove
+    ]);
+    // reorder projects
+    app.put('/portfolio/reorder', [
+        isAuthenticated,
+        isAuthorized({ hasRole: ['admin', 'manager'] }),
+        reorder
     ]);
 }

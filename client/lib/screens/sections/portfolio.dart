@@ -28,6 +28,10 @@ class _PortfolioState extends State<Portfolio> {
   void getData() async {
     var data = await api.getPortfolio();
 
+    if (data == null) {
+      return;
+    }
+
     List<Project> projects = [];
     for (var projInfo in data) {
       var proj = Project(

@@ -12,6 +12,9 @@ class PortfolioAPIHelper {
   final String baseURL =
       'https://us-central1-feltes-portfolio.cloudfunctions.net/api/portfolio/';
 
+  // final String baseURL =
+  //     'http://localhost:5001/feltes-portfolio/us-central1/api/portfolio/';
+
   Future<String> uploadImage(File file, String filename) async {
     final StorageReference storageReference =
         FirebaseStorage().ref().child(filename);
@@ -134,23 +137,23 @@ class PortfolioAPIHelper {
   }
 
   Future<bool> reorderProjects(int oldIndex, int newIndex) async {
-    String url = "$baseURL";
+    String url = "$baseURL" + "reorder";
 
     String token = 'Bearer ${await _getToken()}';
 
     var header = {'Authorization': token};
 
-    Response response = await delete(
-      url,
-      headers: header,
-    );
+    Response response = await put(url, headers: header, body: {
+      "oldIndex": oldIndex.toString(),
+      "newIndex": newIndex.toString()
+    });
 
     if (response.statusCode == 204) {
       return true;
     }
 
     print(
-        "Failed to delete project - Error Code: ${response.statusCode} - ${response.body}");
+        "Failed to reorder project - Error Code: ${response.statusCode} - ${response.body}");
     return false;
   }
 }

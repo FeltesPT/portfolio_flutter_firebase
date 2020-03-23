@@ -53,6 +53,7 @@ class _PortfolioState extends State<Portfolio> {
     for (var project in portfolio) {
       list.add(
         PortfolioCard(
+          key: Key(project.uid),
           project: project,
           isEditing: true,
           onSave: onSave,
@@ -89,7 +90,7 @@ class _PortfolioState extends State<Portfolio> {
       print("Deleted project successfully");
       Scaffold.of(context).showSnackBar(successSnackBar);
     } else {
-      print("Coulnd't delete project");
+      print("Couldn't delete project");
       Scaffold.of(context).showSnackBar(failSnackBar);
     }
 
@@ -101,12 +102,14 @@ class _PortfolioState extends State<Portfolio> {
         .reorderProjects(oldIndex, newIndex);
 
     if (success) {
-      print("Deleted project successfully");
+      print("Project reordered successfully");
       Scaffold.of(context).showSnackBar(successSnackBar);
     } else {
-      print("Coulnd't delete project");
+      print("Couldn't reorder project");
       Scaffold.of(context).showSnackBar(failSnackBar);
     }
+
+    getInfo();
   }
 
   @override
@@ -139,6 +142,10 @@ class _PortfolioState extends State<Portfolio> {
                   children: createList(),
                   padding: EdgeInsets.all(16),
                   onReorder: (oldIndex, newIndex) {
+                    if (oldIndex < newIndex) {
+                      newIndex--;
+                    }
+
                     reorder(oldIndex, newIndex);
                   },
                 )),

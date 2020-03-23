@@ -4,21 +4,38 @@ import * as admin from 'firebase-admin';
 export async function create(req: Request, res: Response) {
     const db = admin.firestore();
 
+    const batch = db.batch();
     const docRef = db.collection('portfolio').doc();
+
+    console.log("Hello Create");
 
     try {
         const { title, description, imageURL, url, date } = req.body;
+        var { order } = req.body;
 
         if (!title || !description || !imageURL || !url || !date) {
             return res.status(400).send({ message: 'Missing Fields' });
         }
 
-        // TODO: Doesn't work, update soon
-        const order = docRef.collection.length;
+        if (order == null) {
+            order = 0;
+        }
 
-        const result = await docRef.set({ order, title, description, imageURL, url, date }, { merge: true });
+        const snap = await db.collection('portfolio').orderBy('order').get();
 
-        return res.status(201).send({ result });
+        snap.forEach(async function (doc) {
+            batch.update(doc.ref, { 'order': doc.data()['order'] + 1 });
+        });
+
+        batch.set(docRef, { order, title, description, imageURL, url, date }, { merge: true });
+
+        try {
+            const result = batch.commit();
+            return res.status(201).send({ result });
+        } catch (err) {
+            return handleError(res, err);
+        }
+
     } catch (err) {
         return handleError(res, err);
     }
@@ -28,10 +45,12 @@ export async function all(req: Request, res: Response) {
     const db = admin.firestore();
     const docRef = db.collection('portfolio');
 
+    console.log("Hello all");
+
     try {
         const portfolio = await (docRef.orderBy('order').get());
         const projects = portfolio.docs.map(doc => {
-            let project = doc.data();
+            const project = doc.data();
             project.uid = doc.id;
             return project;
         });
@@ -67,9 +86,9 @@ export async function patch(req: Request, res: Response) {
 
         const docRef = db.collection('portfolio').doc(id);
 
-        var result = await docRef.update({ title, description, url, date });
+        let result = await docRef.update({ title, description, url, date });
 
-        if (imageURL != null) {
+        if (imageURL !== null) {
             result = await docRef.update({ imageURL });
         }
 
@@ -90,6 +109,47 @@ export async function remove(req: Request, res: Response) {
     } catch (err) {
         return handleError(res, err);
     }
+}
+
+export async function reorder(req: Request, res: Response) {
+    const db = admin.firestore();
+    const { oldIndex, newIndex } = req.body;
+
+    const oldN = Number(oldIndex);
+    const newN = Number(newIndex);
+
+    const bigger = oldN > newN ? oldN : newN;
+    const smaller = oldN < newN ? oldN : newN;
+
+    const batch = db.batch();
+
+    console.log("Hello");
+
+    db.collection('portfolio').where('order', '>=', smaller).where('order', '<=', bigger).orderBy('order').get()
+        .then(function (querySnapshot) {
+            querySnapshot.forEach(async function (doc) {
+
+                if (doc.data().order === oldN) {
+                    batch.update(doc.ref, { order: newN });
+                } else {
+                    if (oldN > newN) {
+                        batch.update(doc.ref, { 'order': doc.data()['order'] + 1 });
+                    } else {
+                        batch.update(doc.ref, { 'order': doc.data()['order'] - 1 });
+                    }
+                }
+            });
+
+            try {
+                const result = batch.commit();
+                return res.status(204).send({ result });
+            } catch (err) {
+                return handleError(res, err);
+            }
+        })
+        .catch(function (err) {
+            return handleError(res, err);
+        });
 }
 
 function handleError(res: Response, err: any) {
