@@ -9,11 +9,12 @@ import 'package:modal_progress_hud/modal_progress_hud.dart';
 
 class AddProject extends StatefulWidget {
   const AddProject(
-      {Key key, @required this.onSave, this.project, this.onDelete})
+      {Key key, @required this.onSave, this.project, this.onDelete, this.lang})
       : super(key: key);
   final Function onSave;
   final Function onDelete;
   final Project project;
+  final String lang;
 
   @override
   _AddProjectState createState() => _AddProjectState();
@@ -25,6 +26,7 @@ class _AddProjectState extends State<AddProject> {
   final TextEditingController _urlController = TextEditingController();
   final TextEditingController _dateController = TextEditingController();
 
+  String _lang;
   File _image;
   bool isLoading;
 
@@ -39,6 +41,7 @@ class _AddProjectState extends State<AddProject> {
       _descriptionController.text = widget.project.description;
       _urlController.text = widget.project.url;
       _dateController.text = widget.project.date;
+      _lang = widget.lang;
     }
   }
 
@@ -79,6 +82,7 @@ class _AddProjectState extends State<AddProject> {
         url: _urlController.text,
         imageURL: url,
         date: _dateController.text,
+        lang: _lang,
       ),
     );
 
@@ -138,6 +142,33 @@ class _AddProjectState extends State<AddProject> {
                   decoration: InputDecoration(
                     labelText: "Date",
                   ),
+                ),
+                DropdownButton<String>(
+                  value: _lang,
+                  icon: Icon(Icons.arrow_downward),
+                  iconSize: 24,
+                  elevation: 16,
+                  style: TextStyle(color: Colors.deepPurple),
+                  underline: Container(
+                    height: 2,
+                    color: Colors.deepPurpleAccent,
+                  ),
+                  onChanged: (String newValue) {
+                    setState(() {
+                      _lang = newValue;
+                    });
+                  },
+                  items: <String>[
+                    "Objective-C",
+                    'Swift',
+                    'flutter',
+                    'React Native'
+                  ].map<DropdownMenuItem<String>>((String value) {
+                    return DropdownMenuItem<String>(
+                      value: value,
+                      child: Text(value),
+                    );
+                  }).toList(),
                 ),
                 Container(
                   padding: EdgeInsets.all(16),

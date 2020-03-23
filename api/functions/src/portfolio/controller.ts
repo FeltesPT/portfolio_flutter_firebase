@@ -7,30 +7,24 @@ export async function create(req: Request, res: Response) {
     const batch = db.batch();
     const docRef = db.collection('portfolio').doc();
 
-    console.log("Hello Create");
-
     try {
-        const { title, description, imageURL, url, date } = req.body;
-        var { order } = req.body;
+        const { title, description, imageURL, url, date, lang } = req.body;
+        const order = 0;
 
-        if (!title || !description || !imageURL || !url || !date) {
+        if (!title || !description || !imageURL || !url || !date || !lang) {
             return res.status(400).send({ message: 'Missing Fields' });
-        }
-
-        if (order == null) {
-            order = 0;
         }
 
         const snap = await db.collection('portfolio').orderBy('order').get();
 
         snap.forEach(async function (doc) {
-            batch.update(doc.ref, { 'order': doc.data()['order'] + 1 });
+            batch.update(doc.ref, { order: doc.data()['order'] + 1 });
         });
 
-        batch.set(docRef, { order, title, description, imageURL, url, date }, { merge: true });
+        batch.set(docRef, { order, title, description, imageURL, url, date, lang }, { merge: true });
 
         try {
-            const result = batch.commit();
+            const result = await batch.commit();
             return res.status(201).send({ result });
         } catch (err) {
             return handleError(res, err);
@@ -78,15 +72,15 @@ export async function patch(req: Request, res: Response) {
 
     try {
         const { id } = req.params
-        const { title, description, imageURL, url, date } = req.body;
+        const { title, description, imageURL, url, date, lang } = req.body;
 
-        if (!id || !title || !description || !url || !date) {
+        if (!id || !title || !description || !url || !date || !lang) {
             return res.status(400).send({ message: 'Missing Fields' });
         }
 
         const docRef = db.collection('portfolio').doc(id);
 
-        let result = await docRef.update({ title, description, url, date });
+        let result = await docRef.update({ title, description, url, date, lang });
 
         if (imageURL !== null) {
             result = await docRef.update({ imageURL });
@@ -123,8 +117,6 @@ export async function reorder(req: Request, res: Response) {
 
     const batch = db.batch();
 
-    console.log("Hello");
-
     db.collection('portfolio').where('order', '>=', smaller).where('order', '<=', bigger).orderBy('order').get()
         .then(function (querySnapshot) {
             querySnapshot.forEach(async function (doc) {
@@ -133,9 +125,9 @@ export async function reorder(req: Request, res: Response) {
                     batch.update(doc.ref, { order: newN });
                 } else {
                     if (oldN > newN) {
-                        batch.update(doc.ref, { 'order': doc.data()['order'] + 1 });
+                        batch.update(doc.ref, { order: doc.data()['order'] + 1 });
                     } else {
-                        batch.update(doc.ref, { 'order': doc.data()['order'] - 1 });
+                        batch.update(doc.ref, { order: doc.data()['order'] - 1 });
                     }
                 }
             });

@@ -50,26 +50,39 @@ class PortfolioCard extends StatelessWidget {
         },
         child: Container(
           constraints: BoxConstraints(maxWidth: 180, maxHeight: 220),
-          padding: EdgeInsets.all(16.0),
+          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 20),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              FittedBox(
-                child: Text(
-                  project.title,
-                  style: TextStyle(fontSize: 18.0, fontWeight: FontWeight.bold),
-                  maxLines: 1,
-                ),
-              ),
-              SizedBox(
-                height: 8.0,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Expanded(
+                    child: Text(
+                      project.title,
+                      style: TextStyle(
+                          fontSize: 18.0, fontWeight: FontWeight.bold),
+                      maxLines: 2,
+                    ),
+                  ),
+                  SizedBox(
+                    height: 30,
+                    width: 30,
+                    child: project.lang != null
+                        ? Image.asset(
+                            "images/${project.lang.replaceAll(' ', '').toLowerCase()}.png",
+                            fit: BoxFit.fitHeight,
+                          )
+                        : Container(),
+                  ),
+                ],
               ),
               Hero(
                 tag: project.title,
                 child: Image.network(
                   project.imageURL,
-                  width: 150,
                   height: 100,
+                  fit: BoxFit.fitWidth,
                 ),
               ),
               SizedBox(

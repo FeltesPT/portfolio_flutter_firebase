@@ -39,6 +39,7 @@ class _PortfolioState extends State<Portfolio> {
         description: projInfo.description,
         imageURL: projInfo.imageURL,
         url: projInfo.url,
+        lang: projInfo.lang,
       );
 
       projects.add(proj);

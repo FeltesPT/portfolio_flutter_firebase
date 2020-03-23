@@ -5,6 +5,7 @@ class Project {
   final String description;
   final String url;
   final String date;
+  final String lang;
 
   Project({
     this.uid,
@@ -13,6 +14,7 @@ class Project {
     this.description,
     this.url,
     this.date,
+    this.lang,
   });
 
   factory Project.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class Project {
       imageURL: json['imageURL'],
       url: json['url'],
       date: json['date'],
+      lang: json['lang'],
     );
   }
 
@@ -32,6 +35,7 @@ class Project {
       'description': description,
       'url': url,
       'date': date,
+      'lang': lang,
     };
 
     if (imageURL != null) {

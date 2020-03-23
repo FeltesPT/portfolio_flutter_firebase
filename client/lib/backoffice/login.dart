@@ -64,14 +64,6 @@ class _LoginState extends State<Login> {
           ),
           backgroundColor: Colors.white,
           body: Container(
-            decoration: BoxDecoration(
-              image: DecorationImage(
-                image: NetworkImage(
-                  "https://source.unsplash.com/1600x900/?technology",
-                ),
-                fit: BoxFit.fitHeight,
-              ),
-            ),
             child: ModalProgressHUD(
               inAsyncCall: isLoading,
               child: Padding(
